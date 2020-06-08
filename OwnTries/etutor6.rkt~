@@ -1,0 +1,13 @@
+'((a b) (b))
+(list (list 'a 'b) (list 'b))
+
+(let ((z '(a b))) (list z (list 'b)))
+
+(let ((z '(a b))) (list z (cdr z)))
+
+(let ((z (list (list 'a 'b)))) (set-cdr! z (cdar z)) z)
+
+(let ((z (list (list 'a 'b)))) (set-cdr! z (list (cdar z))) z)
+
+
+

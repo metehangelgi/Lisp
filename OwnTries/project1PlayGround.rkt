@@ -1,0 +1,153 @@
+
+
+
+
+(#%require (only racket/base random))	
+
+
+(define factorial(lambda (n)
+  (fact-iter 1 1 n)))
+
+(define fact-iter (lambda (product counter max-count)
+  (if (> counter max-count)
+      product
+      (fact-iter (* counter product)
+                 (+ counter 1)
+                 max-count))))
+
+(factorial 5)
+(factorial -4)
+(factorial -44)
+
+
+(define binomial 
+  (lambda (n b)
+(/ (factorial n) (* (factorial b) (factorial (- n b))))
+))
+
+(binomial 5 1)  ; -> 5
+(binomial 5 2)  ; -> 
+(binomial 10 5)  ; ->
+
+
+(define binomial-2
+  (lambda (n b)
+    (if (= b 1) n 
+        (* (/ n b) (binomial-2 (- n 1) (- b 1)))
+)))
+
+(binomial-2 5 1)  ; -> 5
+(binomial-2 5 2)  ; -> 
+(binomial-2 10 5)  ; ->
+
+(define square (lambda (x) (* x x)))
+
+(define (exponent b n)
+  (cond ((= n 0) 1)
+        ((even? n) (square (exponent b (/ n 2))))
+        (else (* b (exponent b (- n 1))))))
+
+;this is a binomial distribution process 
+;kind of probability "n" is sample space , b is the specified number of successes, p is the probability of success on any given trial.
+(define exactly-b-smarties 
+  (lambda (n b p)
+    (* (binomial-2 n b) (exponent p b) (exponent (- 1 p) (- n b)))
+))
+
+(exactly-b-smarties 1 1 0.5)   ; -> 0.5
+(exactly-b-smarties 2 1 0.5)   ; -> 0.5
+(exactly-b-smarties 2 2 0.5)   ; -> 0.25
+(exactly-b-smarties 2 1 0.3)   ; -> 0.42
+(exactly-b-smarties 10 2 0.3)  ; -> 0.23347..
+
+
+
+(define atleast-b-smarties 
+  (lambda (n b p)
+    (if (= b n) (exponent p n)
+        (+ (exactly-b-smarties n b p) (atleast-b-smarties n (+ b 1) p ))
+
+)))
+
+(atleast-b-smarties 9 5 0.5)        ; -> 0.5
+(atleast-b-smarties 19 10 0.5)      ; -> 0.5
+(atleast-b-smarties 10 5 0.6)       ; -> 
+(atleast-b-smarties 15 5 0.3)       ; ->
+
+
+(define atleast-b-smarties-2
+  (lambda (n b p)
+    (atleast-b-smarties-2-helper n b p 0)
+))
+
+(define atleast-b-smarties-2-helper
+  (lambda (n b p prod)
+    (if (> b n) prod
+        (atleast-b-smarties-2-helper n (+ b 1) p (+ prod (exactly-b-smarties n b p)))
+        )))
+
+(atleast-b-smarties-2 9 5 0.5)        ; -> 0.5
+(atleast-b-smarties-2 19 10 0.5)      ; -> 0.5
+(atleast-b-smarties-2 10 5 0.6)       ; -> 
+(atleast-b-smarties-2 15 5 0.3)       ; ->
+
+
+(define good-bag
+  (lambda (n p)
+    (if (< n 8) #f
+        (if (<= 0.5 (atleast-b-smarties-2 n 8 p)) #t #f))
+))
+
+
+
+; Test cases for good-bag:
+
+(good-bag 7 1)       ; -> #f
+(good-bag 8 1)      ; -> #t
+(good-bag 8 0.5)    ; -> #f
+(good-bag 8 0.99)   ; -> #t
+(good-bag 16 0.5)    ; -> #t
+(good-bag 16 0.7)    ; -> #t
+(good-bag 16 0.4)    ; -> #f
+
+
+(define minimum-p
+  (lambda (n inc)
+    (minimum-p-helper n inc 0.0)
+))
+
+(define minimum-p-helper
+  (lambda (n inc current)
+    (let ((a 3))
+    (cond ((< n 8) #f)
+          ((= current 1) "couldn't find minimum possibility rate")
+          (else
+    (if (good-bag n current) current (minimum-p-helper n inc (+ current inc)))
+    )))
+  )
+)
+
+    
+(minimum-p 12 0.01)
+
+(minimum-p 12 0.1)    ; ->0.7
+(minimum-p 12 0.01)    ; ->0.6300000000000003
+(minimum-p 12 0.001)    ; ->0.6220000000000004
+(minimum-p 12 0.0001)    ; ->0.6214999999999479
+(minimum-p 12 0.00001)    ; ->0.6214799999998064
+
+
+
+
+
+
+(random 2)
+(random 3)
+(random)
+(random)
+
+
+
+
+
+

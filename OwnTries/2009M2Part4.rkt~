@@ -1,0 +1,51 @@
+
+(define (create-node value)
+  (let ((right #f)
+        (left #f))
+    (lambda (msg)
+      (cond ((eq? msg ’value) value)
+            ((eq? msg ’right) right)
+            ((eq? msg ’left) left)
+            ((eq? msg ’set-right!)
+             (lambda (new)
+               (set! right new)))
+            ((eq? msg ’set-left!)
+             (lambda (new)
+               (set! left new)))
+            (else (error "don’t know message" msg))))))
+
+(define (create-double-list lst)
+  (let ((set-of-nodes (map create-node lst)))
+    (connect set-of-nodes ’right)
+    (connect set-of-nodes ’left)
+    (car set-of-nodes)))
+
+(define (connect set dir)
+  (cond ((null? (cdr set)) ’done)
+        ((eq? dir ’right)
+         (((car set) ’set-right!) (cadr set))
+         (connect (cdr set) dir))
+        ((eq? dir ’left)
+         (((cadr set) ’set-left!) (car set))
+         (connect (cdr set) dir))
+        (else (error "unknown direction"))))
+
+
+(define dcar (lambda (dlist) (dlist ’value)))
+(define dcdr (lambda (dlist) (dlist ’right)))
+(define dcur (lambda (dlist) (dlist ’left)))
+(define dcadr (lambda (dlist) ((dlist ’right) ’value)))
+
+(define db1 (create-double-list ’(1 2 3 4))
+
+(define (get-last lst dir)
+  (if (not (lst dir))
+      lst
+      (get-last (lst dir) dir)))
+
+
+(define (get-values lst dir)
+  (if (not lst)
+      ’()
+      (cons (dcar lst)
+            (get-values (lst dir) dir))))

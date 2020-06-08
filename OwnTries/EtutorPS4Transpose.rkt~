@@ -1,0 +1,20 @@
+
+(#%require racket)
+(define nil empty) 
+
+(define make-increasing-matrix
+  (lambda (rows cols start)
+    (if (= rows 0) nil
+        (cons (make-increasing-list cols start) (make-increasing-matrix (- rows 1) cols (+ start cols)))
+        )))
+
+(define (make-increasing-list cols start)
+  (if (= cols 0) nil
+      (cons start (make-increasing-list (- cols 1) (+ start 1)))))
+
+(define make-column-increasing-matrix
+  (lambda (rows cols start) 
+    (transpose (make-increasing-matrix rows cols start))))
+
+(make-increasing-matrix 3 5 10)
+(make-increasing-matrix 5 5 10)

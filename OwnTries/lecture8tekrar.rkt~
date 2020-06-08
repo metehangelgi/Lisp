@@ -1,0 +1,15 @@
+(define xcor car)
+(define ycor cdr)
+(define make-vect cons)
+(define make-seg cons)
+(define start-seg car)
+(define end-seg cdr)
+
+(define p1 (make-vect 2 3))
+(xcor p1)
+(ycor p1)
+
+(define p1 (make-vect 5 4))
+
+(define s1 (make-seg p1 p2))
+(xcor (start-seg s1))

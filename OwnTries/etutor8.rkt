@@ -1,0 +1,105 @@
+(define find-assoc-2 (lambda (key alist)
+                           (cond  ((null? alist) #f)
+                                  ((equal? key (caar alist)) (car alist))
+                                  (else (find-assoc-2 key (cdr alist))))))
+
+
+
+
+(define lookup (lambda (key alist)
+                 (let ((foundList (find-assoc-2 key alist)))
+                   (if (eq? foundList #f) (list #f #f)
+                       (list #t (cadr foundList)))
+                   )))
+                 
+
+ (lookup 'foo '((bar 6) (fred 10)))
+
+ (lookup 'foo '((bar 6) (foo #f) (fred #t)))
+
+
+ (define table3-tag 'table3)
+
+;;; Make a table with entries from 0 to size-1.
+;;; type: number,A -> table3<A>
+(define make-table3 
+  (lambda (size initial-value)
+    (list table3-tag
+	  size
+	  (make-vector size initial-value))))
+
+(define get-table3-size cadr)
+(define get-table3-vector caddr)
+
+;;; type: anytype->boolean
+(define table3? 
+  (lambda (thing)
+    (and (pair? thing) (eq? (car thing) table3-tag))))
+
+(define get-table3-size cadr)
+(define get-table3-vector caddr)
+
+(define table3-key?
+  (lambda (thing table)
+    (if (table3? table)
+        (and (integer? thing) (positive? thing) (< thing (get-table3-size table)))
+        'error)))
+
+(define table3-put!
+  (lambda (table key value) 
+    (if (and (table3? table) (table3-key? key table))
+        (vector-set! (get-table3-vector table) key value)
+        'error)))
+
+(define table3-get
+  (lambda (table key)
+    (if (and (table3? table) (table3-key? key table))
+        (vector-ref (get-table3-vector table) key)
+        'error)))
+
+;(table3-get test-table 2)
+(let ((table (make-table3 10 '())))
+  (table3-put! table 2 4)
+  (table3-get table 2))
+
+
+
+
+
+(define a 6)
+(set! a 10)
+((lambda (a) (+ a 2)) (* a 3))
+
+(define a 10)
+(let ((a 6)
+      (b (+ a 2)))
+  (set! a b) a)
+
+((lambda (b) (set! a 2)) a)
+(let ((a 2))
+  (define b 7)
+  (set! b (+ a b)) b)
+
+;(let ((a 2))
+;  (set! b (+ b a))
+;  b)
+
+
+(define make-clock
+  (lambda ()
+    (define sound 'silent) 
+    (lambda ()
+      (if (eq? sound 'tick) 
+          (set! sound 'tock) 
+          (set! sound 'tick))
+      sound
+      )))
+
+
+(define make-delay
+  (lambda (init)
+    (define later init)
+    (lambda (new)
+      (define now later) 
+      (set! later new) 
+      now))) 

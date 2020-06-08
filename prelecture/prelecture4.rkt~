@@ -1,0 +1,48 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname prelecture4) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+
+(define square (lambda (x) (* x x)))
+1. (square 4)
+2. (* 4 4)
+3. 16
+
+
+(define average (lambda (x y) (/ (+ x y) 2)))
+(average 5 (square 3))
+(/ (+ 5 9) 2)
+
+
+
+(define fact
+       (lambda (n)
+(if (= n 1) 1
+(* n (fact (- n 1))))))
+
+;test=
+"test:"
+(fact 6)
+
+
+;bundan ayrıca java daki gibi if(5==5) ? 10:5; ---bu tarz olan kod=
+
+
+(if (= 4 4 ) 2  3)
+(if (= 4 5 ) 2  3)
+
+
+
+
+;bundan sonrası iterator olarak faktoriyel bulmayı gösteriyor...
+
+
+(define ifact (lambda (n) (ifact-helper 1 1 n)))
+
+(define ifact-helper (lambda (product count n) (if (> count n) product
+(ifact-helper (* product count) (+ count 1) n))))
+
+
+;test
+"test iterator: "
+(ifact 4)
+

@@ -1,0 +1,68 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname prelecture2) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(define square (lambda (x) (* x x)))
+(square 5)
+
+
+(define deneme (lambda (x y) (/ (+ x y) 2)))
+ (deneme 5 6) 
+;((lambda (x) (* x x)) 4)
+
+
+
+
+
+ ;birinci yol if else gibi tek tek
+"birinci test:"
+ (sqrt (+ (* 3 3) (* 4 4)))
+ (sqrt (+ (* 9 9) (* 16 16)))
+ (sqrt (+ (* 4 4) (* 4 4)))
+
+
+ ;ikinci yol ise iç içe define ile oluşturuluyor.
+
+
+
+ (define square2 (lambda (x) (* x x)))
+ (define pisagor(lambda (x y) (sqrt (+ (square2 x) (square2 y)))))
+ "ikinci test: "
+ (pisagor 3 4)
+ 
+
+
+
+ #|bu yolda üçüncü bir yol,
+ ikinci ile aynı işlemi yapsa da bize daha
+ fazla çeşit değişkeni tekrar kullanmamızı sağlıyor|#
+
+ 
+(define square3 (lambda (x) (* x x)))
+(define sum-squares
+(lambda (x y) (+ (square3 x) (square3 y))))
+(define pythagoras
+(lambda (y x) (sqrt (sum-squares y x))))
+"üçüncü test:"
+(pythagoras 3 4)
+
+
+(define close-enuf? (lambda (guess x)
+(< (abs (- (square guess) x)) 0.001)))
+
+(define average
+(lambda (a b) (/ (+ a b) 2)))
+(define improve
+    (lambda (guess x)
+(average guess (/ x guess))))
+
+
+(define sqrt-loop (lambda (G X)
+   (if (close-enuf? G X)
+       G
+       (sqrt-loop (improve G X) X))))
+
+(define sqrt1
+    (lambda (x)
+(sqrt-loop 1.0 x)))
+
+
